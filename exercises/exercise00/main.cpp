@@ -61,10 +61,8 @@ int main()
     VertexArrayObject vao;
     VertexBufferObject vbo;
     ElementBufferObject ebo;
-    
 
     // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
-    glEnableVertexAttribArray(0);
 
     // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
     // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
@@ -101,7 +99,7 @@ int main()
         // -----
         time += 0.1f;
 
-        std::cout << time << "\n";
+        // std::cout << time << "\n";
 
         // render
         // ------
