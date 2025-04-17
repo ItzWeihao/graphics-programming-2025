@@ -1,7 +1,12 @@
 #include "TerrainApplication.h"
 
 // (todo) 01.1: Include the libraries you need
+#include <ituGL/geometry/VertexAttribute.h>
 
+#define STB_PERLIN_IMPLEMENTATION
+#include <stb_perlin.h>
+
+#include <vector>
 #include <cmath>
 #include <iostream>
 
@@ -27,8 +32,15 @@ struct Vector3
 };
 
 // (todo) 01.8: Declare an struct with the vertex format
+struct Vertex
+{
+    Vector3 position;
+    Vector2 texCoord;
+    Vector3 color;
+    Vector3 normal;
+};
 
-
+Vector3 GetColorFromHeight(float height);
 
 TerrainApplication::TerrainApplication()
     : Application(1024, 1024, "Terrain demo"), m_gridX(16), m_gridY(16), m_shaderProgram(0)
@@ -43,18 +55,97 @@ void TerrainApplication::Initialize()
     BuildShaders();
 
     // (todo) 01.1: Create containers for the vertex position
+    // Create container for the element data
+    std::vector<unsigned int> indices;
 
+    // Create containers for the vertex data
+    std::vector<float> vertices;
+
+    // Grid scale to convert the entire grid to size 1x1
+    Vector2 scale(1.0f / m_gridX, 1.0f / m_gridY);
+
+    // Number of columns and rows
+    unsigned int columnCount = m_gridX + 1;
+    unsigned int rowCount = m_gridY + 1;
 
     // (todo) 01.1: Fill in vertex data
+    for (int j = 0; j < rowCount; ++j) 
+    {
+        for (int i = 0; i < columnCount; ++i)
+        {
+            unsigned int top_right = j * columnCount + i; // current vertex
+            unsigned int top_left = top_right - 1;
+            unsigned int bottom_right = top_right - columnCount;
+            unsigned int bottom_left = bottom_right - 1;
 
+            vertices.push_back(j);
+            vertices.push_back(i);
+            vertices.push_back(0);
+
+            vertices.push_back(j);
+            vertices.push_back(i + 1);
+            vertices.push_back(0);
+
+            vertices.push_back(j + 1);
+            vertices.push_back(i);
+            vertices.push_back(0);
+
+            vertices.push_back(j);
+            vertices.push_back(i + 1);
+            vertices.push_back(0);
+
+            vertices.push_back(j + 1);
+            vertices.push_back(i + 1);
+            vertices.push_back(0);
+
+            vertices.push_back(j + 1);
+            vertices.push_back(i);
+            vertices.push_back(0);
+
+            
+
+            //if (i > 0 && j > 0) 
+            //{
+            //    // Quad points
+            //    unsigned int top_right = j * columnCount + i; // current vertex
+            //    unsigned int top_left = top_right - 1;
+            //    unsigned int bottom_right = top_right - columnCount;
+            //    unsigned int bottom_left = bottom_right - 1;
+
+            //    // Triangle 1
+            //    /*indices.push_back(bottom_left);
+            //    indices.push_back(bottom_right);
+            //    indices.push_back(top_left);*/
+            //    vertices.push_back(bottom_left);
+            //    vertices.push_back(bottom_right);
+            //    vertices.push_back(top_left);
+            //    vertices.push_back(top_right);
+
+            //    // Triangle 2
+            //    /*indices.push_back(bottom_right);
+            //    indices.push_back(top_left);
+            //    indices.push_back(top_right);*/
+
+
+            //}
+            
+        }
+    }
 
     // (todo) 01.1: Initialize VAO, and VBO
+    m_vbo.Bind();
+    m_vbo.AllocateData(std::span(vertices));
 
+    m_vao.Bind();
+    VertexAttribute position(Data::Type::Float, 3);
+    m_vao.SetAttribute(0, position, 0);
 
     // (todo) 01.5: Initialize EBO
 
 
     // (todo) 01.1: Unbind VAO, and VBO
+    VertexBufferObject::Unbind();
+    VertexArrayObject::Unbind();
 
 
     // (todo) 01.5: Unbind EBO
@@ -79,7 +170,8 @@ void TerrainApplication::Render()
     glUseProgram(m_shaderProgram);
 
     // (todo) 01.1: Draw the grid
-
+    m_vao.Bind();
+    glDrawArrays(GL_TRIANGLES, 0, (m_gridX * m_gridY * 6));
 }
 
 void TerrainApplication::Cleanup()
@@ -87,6 +179,29 @@ void TerrainApplication::Cleanup()
     Application::Cleanup();
 }
 
+Vector3 GetColorFromHeight(float height)
+{
+    if (height > 0.3f)
+    {
+        return Vector3(1.0f, 1.0f, 1.0f); // Snow
+    }
+    else if (height > 0.1f)
+    {
+        return Vector3(0.3, 0.3f, 0.35f); // Rock
+    }
+    else if (height > -0.05f)
+    {
+        return Vector3(0.1, 0.4f, 0.15f); // Grass
+    }
+    else if (height > -0.1f)
+    {
+        return Vector3(0.6, 0.5f, 0.4f); // Sand
+    }
+    else
+    {
+        return Vector3(0.1f, 0.1f, 0.3f); // Water
+    }
+}
 
 void TerrainApplication::BuildShaders()
 {
