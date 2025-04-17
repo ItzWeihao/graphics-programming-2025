@@ -18,6 +18,11 @@ public:
     Object(const Object&) = delete;
     void operator = (const Object&) = delete;
 
+    // (C++) 8
+    // Move semantics
+    Object(Object&& object) noexcept;
+    Object& operator = (Object&& object) noexcept;
+
     inline Handle GetHandle() const { return m_handle; }
 
     // An object is only valid if its handle is not null
@@ -30,6 +35,11 @@ public:
 protected:
     // Give access to derived classes to modify the handle
     inline Handle& GetHandle() { return m_handle; }
+
+#ifndef NDEBUG
+    // Check if this Object is currently bound
+    virtual bool IsBound() const { return false; }
+#endif
 
 protected:
     // We define a constant to represent null handles. In OpenGL we use 0 to represent this
