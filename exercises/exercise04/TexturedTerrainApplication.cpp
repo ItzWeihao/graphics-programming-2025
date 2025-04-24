@@ -40,7 +40,7 @@ void TexturedTerrainApplication::Initialize()
     GetDevice().EnableFeature(GL_DEPTH_TEST);
 
     //Enable wireframe
-    GetDevice().SetWireframeEnabled(true);
+    // GetDevice().SetWireframeEnabled(true);
 }
 
 void TexturedTerrainApplication::Update()
@@ -69,7 +69,9 @@ void TexturedTerrainApplication::Render()
     DrawObject(m_terrainPatch, *m_terrainMaterial00, glm::scale(glm::vec3(10.0f)));
 
     // (todo) 04.2: Add more patches here
-    
+    DrawObject(m_terrainPatch, *m_terrainMaterial10, glm::translate(glm::vec3(-10.0f, 0.0f, 0.0f)) * glm::scale(glm::vec3(10.0f)));
+    DrawObject(m_terrainPatch, *m_terrainMaterial01, glm::translate(glm::vec3(0.0f, 0.0f, -10.0f)) * glm::scale(glm::vec3(10.0f)));
+    DrawObject(m_terrainPatch, *m_terrainMaterial11, glm::translate(glm::vec3(-10.0f, 0.0f, -10.0f)) * glm::scale(glm::vec3(10.0f)));
 
     // Water patches
     // (todo) 04.5: Add water planes
@@ -80,8 +82,13 @@ void TexturedTerrainApplication::InitializeTextures()
 {
     m_defaultTexture = CreateDefaultTexture();
 
-    // (todo) 04.3: Load terrain textures here
     m_heightmapTexture00 = CreateHeightMap(m_gridX, m_gridY, glm::ivec2(0, 0));
+    m_heightmapTexture01 = CreateHeightMap(m_gridX, m_gridY, glm::ivec2(0, -1));
+    m_heightmapTexture10 = CreateHeightMap(m_gridX, m_gridY, glm::ivec2(-1, 0));
+    m_heightmapTexture11 = CreateHeightMap(m_gridX, m_gridY, glm::ivec2(-1, -1));
+
+    // (todo) 04.3: Load terrain textures here
+    m_grassTexture = LoadTexture("textures/grass.jpg");
 
     // (todo) 04.5: Load water texture here
 
@@ -90,8 +97,8 @@ void TexturedTerrainApplication::InitializeTextures()
 void TexturedTerrainApplication::InitializeMaterials()
 {
     // Default shader program
-    Shader defaultVS = m_vertexShaderLoader.Load("C:/GraphicsProgramming/graphics-programming-2025/exercises/exercise04/shaders/default.vert");
-    Shader defaultFS = m_fragmentShaderLoader.Load("C:/GraphicsProgramming/graphics-programming-2025/exercises/exercise04/shaders/default.frag");
+    Shader defaultVS = m_vertexShaderLoader.Load("shaders/default.vert");
+    Shader defaultFS = m_fragmentShaderLoader.Load("shaders/default.frag");
     std::shared_ptr<ShaderProgram> defaultShaderProgram = std::make_shared<ShaderProgram>();
     defaultShaderProgram->Build(defaultVS, defaultFS);
 
@@ -100,15 +107,24 @@ void TexturedTerrainApplication::InitializeMaterials()
     m_defaultMaterial->SetUniformValue("Color", glm::vec4(1.0f));
 
     // (todo) 04.1: Add terrain shader and material here
-    Shader terrainVS = m_vertexShaderLoader.Load("C:/GraphicsProgramming/graphics-programming-2025/exercises/exercise04/shaders/terrain.vert");
-    Shader terrainFS = m_fragmentShaderLoader.Load("C:/GraphicsProgramming/graphics-programming-2025/exercises/exercise04/shaders/terrain.frag");
+    Shader terrainVS = m_vertexShaderLoader.Load("shaders/terrain.vert");
+    Shader terrainFS = m_fragmentShaderLoader.Load("shaders/terrain.frag");
     std::shared_ptr<ShaderProgram> terrainShaderProgram = std::make_shared<ShaderProgram>();
     terrainShaderProgram->Build(terrainVS, terrainFS);
 
     m_terrainMaterial00 = std::make_shared<Material>(terrainShaderProgram);
     m_terrainMaterial00->SetUniformValue("Color", glm::vec4(1.0f));
     m_terrainMaterial00->SetUniformValue("Heightmap", m_heightmapTexture00);
+    m_terrainMaterial00->SetUniformValue("ColorTexture0", m_grassTexture);
 
+    m_terrainMaterial10 = std::make_shared<Material>(terrainShaderProgram);
+    m_terrainMaterial10->SetUniformValue("Heightmap", m_heightmapTexture10);
+
+    m_terrainMaterial01 = std::make_shared<Material>(terrainShaderProgram);
+    m_terrainMaterial01->SetUniformValue("Heightmap", m_heightmapTexture01);
+
+    m_terrainMaterial11 = std::make_shared<Material>(terrainShaderProgram);
+    m_terrainMaterial11->SetUniformValue("Heightmap", m_heightmapTexture11);
 
     // (todo) 04.5: Add water shader and material here
 
@@ -155,16 +171,16 @@ std::shared_ptr<Texture2DObject> TexturedTerrainApplication::LoadTexture(const c
     
     
     // (todo) 04.3: Load the texture data here
-    unsigned char* data = nullptr;
+    unsigned char* data = stbi_load(path, &width, &height, &components, 4);
 
     texture->Bind();
     texture->SetImage(0, width, height, TextureObject::FormatRGBA, TextureObject::InternalFormatRGBA, std::span<const unsigned char>(data, width * height * 4));
 
     // (todo) 04.3: Generate mipmaps
-
+    texture->GenerateMipmap();
 
     // (todo) 04.3: Release texture data
-
+    stbi_image_free(data);
 
     return texture;
 }

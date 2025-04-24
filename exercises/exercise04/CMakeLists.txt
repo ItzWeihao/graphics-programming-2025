@@ -9,3 +9,6 @@ source_group("Shaders" FILES ${shaders})
 
 add_executable(${TARGETNAME} ${target_inc} ${target_src} ${shaders})
 target_link_libraries(${TARGETNAME} ${libraries})
+
+file(COPY shaders DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY textures DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
