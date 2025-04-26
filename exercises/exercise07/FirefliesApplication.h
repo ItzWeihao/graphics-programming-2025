@@ -75,6 +75,9 @@ private:
     };
     std::vector<Firefly> m_fireflies;
 
+    // Firefly parameters
+    glm::vec2 m_distanceAttenuation;
+
     // True if mouse has been pressed and not released (to avoid creating one firefly each frame)
     bool m_mouseClicked;
 
