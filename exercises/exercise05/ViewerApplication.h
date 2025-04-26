@@ -48,6 +48,9 @@ private:
 
     // (todo) 05.X: Add light variables
     glm::vec3 m_ambientColor;
+    glm::vec3 m_lightColor;
+    float m_lightIntensity;
+    glm::vec3 m_lightPosition;
 
-
+    float m_specularExponentGrass;
 };
