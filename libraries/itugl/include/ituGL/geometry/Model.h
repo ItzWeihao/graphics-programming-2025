@@ -36,6 +36,8 @@ public:
     // Draw all the submeshes of the mesh, each one with a material on the list
     void Draw();
 
+    void SetColor();
+
 private:
     // Pointer to the model Mesh
     std::shared_ptr<Mesh> m_mesh;

@@ -168,7 +168,7 @@ void SceneViewerApplication::InitializeModels()
 
     m_skyboxTexture->Bind();
     float maxLod;
-    m_skyboxTexture->GetParameter(TextureObject::ParameterFloat::MaxLod, maxLod);
+     m_skyboxTexture->GetParameter(TextureObject::ParameterFloat::MaxLod, maxLod);
     TextureCubemapObject::Unbind();
 
     m_defaultMaterial->SetUniformValue("AmbientColor", glm::vec3(0.25f));
