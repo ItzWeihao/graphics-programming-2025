@@ -114,6 +114,7 @@ void ProjectApplication::InitializeLights()
     // Create a point light and add it to the scene
     std::shared_ptr<SpotLight> spotLight = std::make_shared<SpotLight>();
     spotLight->SetPosition(glm::vec3(0, 0, 0));
+    spotLight->SetDirection(glm::vec3(0.0f, -1.0f, 0.0f));
     spotLight->SetDistanceAttenuation(glm::vec2(5.0f, 10.0f));
     m_scene.AddSceneNode(std::make_shared<SceneLight>("spot light", spotLight));
 }
@@ -138,7 +139,7 @@ void ProjectApplication::InitializeMaterial()
     shaderProgramPtr->Build(vertexShader, fragmentShader);
 
     // Loading unlit version of shader for Light Cone
-    std::vector<const char*> unlitVertexShaderPaths;
+    /*std::vector<const char*> unlitVertexShaderPaths;
     unlitVertexShaderPaths.push_back("shaders/version330.glsl");
     unlitVertexShaderPaths.push_back("shaders/unlit.vert");
     Shader unlitVertexShader = ShaderLoader(Shader::VertexShader).Load(unlitVertexShaderPaths);
@@ -149,7 +150,7 @@ void ProjectApplication::InitializeMaterial()
     Shader unlitFragmentShader = ShaderLoader(Shader::FragmentShader).Load(unlitFragShaderPaths);
 
     std::shared_ptr<ShaderProgram> unlitShaderProgramPtr = std::make_shared<ShaderProgram>();
-    unlitShaderProgramPtr->Build(unlitVertexShader, unlitFragmentShader);
+    unlitShaderProgramPtr->Build(unlitVertexShader, unlitFragmentShader);*/
 
     // Get transform related uniform locations
     ShaderProgram::Location cameraPositionLocation = shaderProgramPtr->GetUniformLocation("CameraPosition");
@@ -157,8 +158,8 @@ void ProjectApplication::InitializeMaterial()
     ShaderProgram::Location viewProjMatrixLocation = shaderProgramPtr->GetUniformLocation("ViewProjMatrix");
 
     // Get related uniforms for the unlit version of the shader
-    ShaderProgram::Location unlitWorldMatrixLocation = unlitShaderProgramPtr->GetUniformLocation("WorldMatrix");
-    ShaderProgram::Location unlitViewProjMatrixLocation = unlitShaderProgramPtr->GetUniformLocation("ViewProjMatrix");
+    // ShaderProgram::Location unlitWorldMatrixLocation = unlitShaderProgramPtr->GetUniformLocation("WorldMatrix");
+    // ShaderProgram::Location unlitViewProjMatrixLocation = unlitShaderProgramPtr->GetUniformLocation("ViewProjMatrix");
 
     // Register shader with renderer
     m_renderer.RegisterShaderProgram(shaderProgramPtr,
@@ -175,7 +176,7 @@ void ProjectApplication::InitializeMaterial()
     );
 
     // Register unlit shader with renderer
-    m_renderer.RegisterShaderProgram(unlitShaderProgramPtr,
+    /*m_renderer.RegisterShaderProgram(unlitShaderProgramPtr,
         [=](const ShaderProgram& unlitShaderProgram, const glm::mat4& worldMatrix, const Camera& camera, bool cameraChanged)
         {
             if (cameraChanged)
@@ -188,7 +189,7 @@ void ProjectApplication::InitializeMaterial()
         {
             return true;
         }
-    );
+    );*/
 
     // Filter out uniforms that are not material properties
     ShaderUniformCollection::NameSet filteredUniforms;
@@ -206,17 +207,17 @@ void ProjectApplication::InitializeMaterial()
     m_defaultMaterial = std::make_shared<Material>(shaderProgramPtr, filteredUniforms);
 
     // Create reference to Unlit material
-    assert(unlitShaderProgramPtr);
-    m_unlitMaterial = std::make_shared<Material>(unlitShaderProgramPtr);
+    // assert(unlitShaderProgramPtr);
+    // m_unlitMaterial = std::make_shared<Material>(unlitShaderProgramPtr, filteredUniforms);
 }
 
 void ProjectApplication::InitializeModels()
 {
     // Testing Cubemap
-    m_skyboxTexture = TextureCubemapLoader::LoadTextureShared("models/skybox/defaultCubemap.png", TextureObject::FormatRGB, TextureObject::InternalFormatSRGB8);
+    // m_skyboxTexture = TextureCubemapLoader::LoadTextureShared("models/skybox/defaultCubemap.png", TextureObject::FormatRGB, TextureObject::InternalFormatSRGB8);
     
     // Project Cubemap
-    // m_skyboxTexture = TextureCubemapLoader::LoadTextureShared("models/skybox/skybox.png", TextureObject::FormatRGB, TextureObject::InternalFormatSRGB8);
+    m_skyboxTexture = TextureCubemapLoader::LoadTextureShared("models/skybox/skybox.png", TextureObject::FormatRGB, TextureObject::InternalFormatSRGB8);
 
 
     m_skyboxTexture->Bind();
@@ -233,15 +234,14 @@ void ProjectApplication::InitializeModels()
     m_defaultMaterial->SetBlendEquation(Material::BlendEquation::Add);
     m_defaultMaterial->SetBlendParams(Material::BlendParam::SourceAlpha, Material::BlendParam::OneMinusSourceAlpha);
 
-    m_unlitMaterial->SetUniformValue("Color", glm::vec4(1.0f, 1.0f, 1.0f, 0.5f));
+    // m_unlitMaterial->SetUniformValue("Color", glm::vec4(1.0f));
 
     // Configure loader
     ModelLoader loader(m_defaultMaterial);
-    ModelLoader unlitLoader(m_unlitMaterial);
+    // ModelLoader unlitLoader(m_unlitMaterial);
 
     // Create a new material copy for each submaterial
     loader.SetCreateMaterials(true);
-    unlitLoader.SetCreateMaterials(true);
 
     // Flip vertically textures loaded by the model loader
     loader.GetTexture2DLoader().SetFlipVertical(true);
@@ -259,19 +259,15 @@ void ProjectApplication::InitializeModels()
     loader.SetMaterialProperty(ModelLoader::MaterialProperty::NormalTexture, "NormalTexture");
     loader.SetMaterialProperty(ModelLoader::MaterialProperty::SpecularTexture, "SpecularTexture");
 
-    unlitLoader.SetMaterialAttribute(VertexAttribute::Semantic::Position, "VertexPosition");
-    unlitLoader.SetMaterialAttribute(VertexAttribute::Semantic::Normal, "VertexNormal");
-    unlitLoader.SetMaterialAttribute(VertexAttribute::Semantic::TexCoord0, "VertexTexCoord");
-
     // Load models
     //std::shared_ptr<Model> chestModel = loader.LoadShared("models/treasure_chest/treasure_chest.obj");
     //m_scene.AddSceneNode(std::make_shared<SceneModel>("treasure chest", chestModel));
 
-    std::shared_ptr<Model> spotLightCone = unlitLoader.LoadShared("models/lightcone/spotlight_cone.obj");
-    m_scene.AddSceneNode(std::make_shared<SceneModel>("spotlight cone", spotLightCone));
-
     std::shared_ptr<Model> lighthouseModel = loader.LoadShared("models/lighthouse/lighthouseobj.obj");
     m_scene.AddSceneNode(std::make_shared<SceneModel>("lighthouse", lighthouseModel));
+
+    // std::shared_ptr<Model> spotLightCone = unlitLoader.LoadShared("models/lightcone/spotlight_cone.obj");
+    // m_scene.AddSceneNode(std::make_shared<SceneModel>("spotlight cone", spotLightCone));
 
     //std::shared_ptr<Model> millModel = loader.LoadShared("models/mill/Mill.obj");
     //m_scene.AddSceneNode(std::make_shared<SceneModel>("mill model", millModel));
