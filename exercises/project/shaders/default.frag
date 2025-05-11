@@ -1,12 +1,13 @@
 //Inputs
-in vec3 WorldPosition;
-in vec3 WorldNormal;
-in vec3 WorldTangent;
-in vec3 WorldBitangent;
+in vec3 ViewNormal;
+in vec3 ViewTangent;
+in vec3 ViewBitangent;
 in vec2 TexCoord;
 
 //Outputs
-out vec4 FragColor;
+out vec4 FragAlbedo;
+out vec2 FragNormal;
+out vec4 FragOthers;
 
 //Uniforms
 uniform vec3 Color;
@@ -14,23 +15,12 @@ uniform sampler2D ColorTexture;
 uniform sampler2D NormalTexture;
 uniform sampler2D SpecularTexture;
 
-uniform vec3 CameraPosition;
-
 void main()
 {
-	SurfaceData data;
-	data.normal = SampleNormalMap(NormalTexture, TexCoord, normalize(WorldNormal), normalize(WorldTangent), normalize(WorldBitangent));
-	data.reflectionColor = Color * texture(ColorTexture, TexCoord).rgb;
-	vec3 arm = texture(SpecularTexture, TexCoord).rgb;
-	data.alpha = texture(ColorTexture, TexCoord).a;
+	FragAlbedo = vec4(Color.rgb * texture(ColorTexture, TexCoord).rgb, 1);
 
-	data.ambientReflectance = arm.x;
-	data.diffuseReflectance = 1.0f;
-	data.specularReflectance = pow(1.0f - arm.y, 4);
-	data.specularExponent = 2.0f / pow(arm.y, 2) - 2.0f;
+	vec3 viewNormal = SampleNormalMap(NormalTexture, TexCoord, normalize(ViewNormal), normalize(ViewTangent), normalize(ViewBitangent));
+	FragNormal = viewNormal.xy;
 
-	vec3 position = WorldPosition;
-	vec3 viewDir = GetDirection(position, CameraPosition);
-	vec3 color = ComputeLighting(position, data, viewDir, true);
-	FragColor = vec4(color.rgb, alpha);
+	FragOthers = texture(SpecularTexture, TexCoord);
 }

@@ -6,33 +6,29 @@ layout (location = 3) in vec3 VertexBitangent;
 layout (location = 4) in vec2 VertexTexCoord;
 
 //Outputs
-out vec3 WorldPosition;
-out vec3 WorldNormal;
-out vec3 WorldTangent;
-out vec3 WorldBitangent;
+out vec3 ViewNormal;
+out vec3 ViewTangent;
+out vec3 ViewBitangent;
 out vec2 TexCoord;
 
 //Uniforms
-uniform mat4 WorldMatrix;
-uniform mat4 ViewProjMatrix;
+uniform mat4 WorldViewMatrix;
+uniform mat4 WorldViewProjMatrix;
 
 void main()
 {
-	// vertex position in world space (for lighting computation)
-	WorldPosition = (WorldMatrix * vec4(VertexPosition, 1.0)).xyz;
+	// normal in view space (for lighting computation)
+	ViewNormal = (WorldViewMatrix * vec4(VertexNormal, 0.0)).xyz;
 
-	// normal in world space (for lighting computation)
-	WorldNormal = (WorldMatrix * vec4(VertexNormal, 0.0)).xyz;
+	// tangent in view space (for lighting computation)
+	ViewTangent = (WorldViewMatrix * vec4(VertexTangent, 0.0)).xyz;
 
-	// tangent in world space (for lighting computation)
-	WorldTangent = (WorldMatrix * vec4(VertexTangent, 0.0)).xyz;
-
-	// bitangent in world space (for lighting computation)
-	WorldBitangent = (WorldMatrix * vec4(VertexBitangent, 0.0)).xyz;
+	// bitangent in view space (for lighting computation)
+	ViewBitangent = (WorldViewMatrix * vec4(VertexBitangent, 0.0)).xyz;
 
 	// texture coordinates
 	TexCoord = VertexTexCoord;
 
 	// final vertex position (for opengl rendering, not for lighting)
-	gl_Position = ViewProjMatrix * vec4(WorldPosition, 1.0);
+	gl_Position = WorldViewProjMatrix * vec4(VertexPosition, 1.0);
 }

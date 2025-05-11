@@ -1,5 +1,5 @@
 
-// Returns camera position, extracted from view matrix
+//
 vec3 GetCameraPosition(mat4 viewMatrix)
 {
 	vec3 position = viewMatrix[3].xyz;
@@ -7,32 +7,32 @@ vec3 GetCameraPosition(mat4 viewMatrix)
 	return position;
 }
 
-// Gets vector halfway between two other vectors (typically, light and view)
+//
 vec3 GetHalfVector(vec3 v1, vec3 v2)
 {
    return normalize(v1 + v2);
 }
 
-// Gets the direction from a point to another
+//
 vec3 GetDirection(vec3 fromPosition, vec3 toPosition)
 {
 	return normalize(toPosition - fromPosition);
 }
 
-// Returns the dot product, clamped only to positive values
+//
 float ClampedDot(vec3 v1, vec3 v2)
 {
 	return max(dot(v1, v2), 0);
 }
 
-// Constructs the 3D normal using only XY values (computing implicit Z)
+//
 vec3 GetImplicitNormal(vec2 normal)
 {
-	float z = sqrt(1.0f - normal.x * normal.x - normal.y * normal.y);
+	float z = sqrt(max(1.0f - normal.x * normal.x - normal.y * normal.y, 0.0f));
 	return vec3(normal, z);
 }
 
-// Sample texture map in tangent space and converts to the same space of the provided normal, tangent and bitangent 
+//
 vec3 SampleNormalMap(sampler2D normalTexture, vec2 texCoord, vec3 normal, vec3 tangent, vec3 bitangent)
 {
 	// Read normalTexture
@@ -48,7 +48,7 @@ vec3 SampleNormalMap(sampler2D normalTexture, vec2 texCoord, vec3 normal, vec3 t
 	return normalize(tangentMatrix * normalTangentSpace);
 }
 
-// Sample texture map in tangent space and converts to the same space of the provided normal and tangent 
+//
 vec3 SampleNormalMap(sampler2D normalTexture, vec2 texCoord, vec3 normal, vec3 tangent)
 {
 	// Build the tangent space base vectors
@@ -59,12 +59,43 @@ vec3 SampleNormalMap(sampler2D normalTexture, vec2 texCoord, vec3 normal, vec3 t
 	return SampleNormalMap(normalTexture, texCoord, normal, tangent, bitangent);
 }
 
-// Obtains a position in view space using the depth buffer and the inverse projection matrix
+//
 vec3 ReconstructViewPosition(sampler2D depthTexture, vec2 texCoord, mat4 invProjMatrix)
 {
 	// Reconstruct the position, using the screen texture coordinates and the depth
 	float depth = texture(depthTexture, texCoord).r;
+	if (depth == 1)
+		discard;
 	vec3 clipPosition = vec3(texCoord, depth) * 2.0f - vec3(1.0f);
 	vec4 viewPosition = invProjMatrix * vec4(clipPosition, 1.0f);
 	return viewPosition.xyz / viewPosition.w;
 }
+
+float GetLuminance(vec3 color)
+{
+   return dot(color, vec3(0.2126f, 0.7152f, 0.0722f));
+}
+
+vec3 RGBToHSV(vec3 rgb)
+{
+   vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
+
+   vec4 p = mix( vec4( rgb.bg, K.wz ), vec4( rgb.gb, K.xy ), step( rgb.b, rgb.g ) );
+   vec4 q = mix( vec4( p.xyw, rgb.r ), vec4( rgb.r, p.yzx ), step( p.x, rgb.r ) );
+
+   float d = q.x - min( q.w, q.y );
+
+   float epsilon = 1.0e-10;
+
+   return vec3( abs(q.z + (q.w - q.y) / (6.0 * d + epsilon)), d / (q.x + epsilon), q.x);
+}
+
+vec3 HSVToRGB( vec3 hsv )
+{
+   vec4 K = vec4( 1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0 );
+
+   vec3 p = abs( fract( hsv.xxx + K.xyz ) * 6.0 - K.www );
+
+   return hsv.z * mix( K.xxx, clamp(p - K.xxx, 0, 1), hsv.y );
+}
+
