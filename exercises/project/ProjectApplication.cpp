@@ -28,7 +28,7 @@
 #include <glm/glm.hpp>
 
 ProjectApplication::ProjectApplication()
-    : Application(1024, 1024, "Post FX Scene Viewer demo")
+    : Application(1024, 1024, "Lighthouse")
     , m_renderer(GetDevice())
     , m_exposure(1.0f)
     , m_contrast(1.0f)
@@ -116,53 +116,25 @@ void ProjectApplication::InitializeLights()
     m_scene.AddSceneNode(std::make_shared<SceneLight>("directional light", directionalLight));
 
     // Create a point light and add it to the scene
-    std::shared_ptr<PointLight> pointLight0 = std::make_shared<PointLight>();
-    pointLight0->SetPosition(glm::vec3(4.8f, -0.7f, -3.7f));
-    pointLight0->SetColor(glm::vec3(1.0f, 0.98f, 0.5f));
-    pointLight0->SetIntensity(8.0f);
-    pointLight0->SetDistanceAttenuation(glm::vec2(0.5f, 1.5f));
+    std::shared_ptr<PointLight> pointLight0 = CreatePointLight(glm::vec3(4.8f, -0.7f, -3.7f), glm::vec3(1.0f, 0.98f, 0.5f), 8.0f, glm::vec2(0.5f, 1.5f));
     m_scene.AddSceneNode(std::make_shared<SceneLight>("point light 0", pointLight0));
 
-    std::shared_ptr<PointLight> pointLight1 = std::make_shared<PointLight>();
-    pointLight1->SetPosition(glm::vec3(2.4f, -0.7f, -3.7f));
-    pointLight1->SetColor(glm::vec3(1.0f, 0.98f, 0.5f));
-    pointLight1->SetIntensity(8.0f);
-    pointLight1->SetDistanceAttenuation(glm::vec2(0.5f, 1.5f));
+    std::shared_ptr<PointLight> pointLight1 = CreatePointLight(glm::vec3(2.4f, -0.7f, -3.7f), glm::vec3(1.0f, 0.98f, 0.5f), 8.0f, glm::vec2(0.5f, 1.5f));
     m_scene.AddSceneNode(std::make_shared<SceneLight>("point light 1", pointLight1));
 
-    std::shared_ptr<PointLight> pointLight2 = std::make_shared<PointLight>();
-    pointLight2->SetPosition(glm::vec3(4.4f, -4.8f, -7.5f));
-    pointLight2->SetColor(glm::vec3(1.0f, 0.98f, 0.5f));
-    pointLight2->SetIntensity(8.0f);
-    pointLight2->SetDistanceAttenuation(glm::vec2(0.5f, 1.5f));
+    std::shared_ptr<PointLight> pointLight2 = CreatePointLight(glm::vec3(4.4f, -4.8f, -7.5f), glm::vec3(1.0f, 0.98f, 0.5f), 8.0f, glm::vec2(0.5f, 1.5f));
     m_scene.AddSceneNode(std::make_shared<SceneLight>("point light 2", pointLight2));
 
-    std::shared_ptr<PointLight> pointLight3 = std::make_shared<PointLight>();
-    pointLight3->SetPosition(glm::vec3(2.65f, 2.0f, 0.0f));
-    pointLight3->SetColor(glm::vec3(1.0f, 0.98f, 0.5f));
-    pointLight3->SetIntensity(8.0f);
-    pointLight3->SetDistanceAttenuation(glm::vec2(0.5f, 1.5f));
+    std::shared_ptr<PointLight> pointLight3 = CreatePointLight(glm::vec3(2.65f, 2.0f, 0.0f), glm::vec3(1.0f, 0.98f, 0.5f), 8.0f, glm::vec2(0.5f, 1.5f));
     m_scene.AddSceneNode(std::make_shared<SceneLight>("point light 3", pointLight3));
 
-    std::shared_ptr<PointLight> pointLight4 = std::make_shared<PointLight>();
-    pointLight4->SetPosition(glm::vec3(2.15f, 2.6f, 4.35f));
-    pointLight4->SetColor(glm::vec3(1.0f, 0.98f, 0.5f));
-    pointLight4->SetIntensity(8.0f);
-    pointLight4->SetDistanceAttenuation(glm::vec2(0.5f, 1.5f));
+    std::shared_ptr<PointLight> pointLight4 = CreatePointLight(glm::vec3(2.15f, 2.6f, 4.35f), glm::vec3(1.0f, 0.98f, 0.5f), 8.0f, glm::vec2(0.5f, 1.5f));
     m_scene.AddSceneNode(std::make_shared<SceneLight>("point light 4", pointLight4));
 
-    std::shared_ptr<PointLight> pointLight5 = std::make_shared<PointLight>();
-    pointLight5->SetPosition(glm::vec3(-1.00f, 1.3f, 0.1f));
-    pointLight5->SetColor(glm::vec3(1.0f, 0.98f, 0.5f));
-    pointLight5->SetIntensity(8.0f);
-    pointLight5->SetDistanceAttenuation(glm::vec2(0.5f, 1.5f));
+    std::shared_ptr<PointLight> pointLight5 = CreatePointLight(glm::vec3(-1.00f, 1.3f, 0.1f), glm::vec3(1.0f, 0.98f, 0.5f), 8.0f, glm::vec2(0.5f, 1.5f));
     m_scene.AddSceneNode(std::make_shared<SceneLight>("point light 5", pointLight5));
 
-    std::shared_ptr<PointLight> pointLight6 = std::make_shared<PointLight>();
-    pointLight6->SetPosition(glm::vec3(0.70f, 0.4f, -1.75f));
-    pointLight6->SetColor(glm::vec3(1.0f, 0.98f, 0.5f));
-    pointLight6->SetIntensity(8.0f);
-    pointLight6->SetDistanceAttenuation(glm::vec2(0.5f, 1.5f));
+    std::shared_ptr<PointLight> pointLight6 = CreatePointLight(glm::vec3(0.70f, 0.4f, -1.75f), glm::vec3(1.0f, 0.98f, 0.5f), 8.0f, glm::vec2(0.5f, 1.5f));
     m_scene.AddSceneNode(std::make_shared<SceneLight>("point light 6", pointLight6));
 
     // Create a spot light and add it to the scene
@@ -244,7 +216,6 @@ void ProjectApplication::InitializeModels()
 
     m_defaultMaterial->SetUniformValue("EnvironmentTexture", m_skyboxTexture);
     m_defaultMaterial->SetUniformValue("EnvironmentMaxLod", maxLod);
-    m_defaultMaterial->SetUniformValue("Color", glm::vec3(1.0f));
 
     m_defaultMaterial->SetBlendEquation(Material::BlendEquation::Add);
     m_defaultMaterial->SetBlendParams(Material::BlendParam::SourceAlpha, Material::BlendParam::OneMinusSourceAlpha);
@@ -274,50 +245,6 @@ void ProjectApplication::InitializeModels()
     // Load models
     std::shared_ptr<Model> lighthouseModel = loader.LoadShared("models/lighthouse/lighthouseobj.obj");
     m_scene.AddSceneNode(std::make_shared<SceneModel>("light house", lighthouseModel));
-
-    /*std::shared_ptr<Model> sphere = loader.LoadShared("models/lightsphere/light_sphere.obj");
-    sphere->ClearMaterials();
-    m_scene.AddSceneNode(std::make_shared<SceneModel>("light sphere", sphere));*/
-}
-
-void ProjectApplication::InitializeFramebuffers()
-{
-    int width, height;
-    GetMainWindow().GetDimensions(width, height);
-
-    // Scene Texture
-    m_sceneTexture = std::make_shared<Texture2DObject>();
-    m_sceneTexture->Bind();
-    m_sceneTexture->SetImage(0, width, height, TextureObject::FormatRGBA, TextureObject::InternalFormat::InternalFormatRGBA16F);
-    m_sceneTexture->SetParameter(TextureObject::ParameterEnum::MinFilter, GL_LINEAR);
-    m_sceneTexture->SetParameter(TextureObject::ParameterEnum::MagFilter, GL_LINEAR);
-    Texture2DObject::Unbind();
-
-    m_sceneFramebuffer = std::make_shared<FramebufferObject>();
-    m_sceneFramebuffer->Bind();
-    m_sceneFramebuffer->SetTexture(FramebufferObject::Target::Draw, FramebufferObject::Attachment::Depth, *m_depthTexture);
-    m_sceneFramebuffer->SetTexture(FramebufferObject::Target::Draw, FramebufferObject::Attachment::Color0, *m_sceneTexture);
-    m_sceneFramebuffer->SetDrawBuffers(std::array<FramebufferObject::Attachment, 1>({ FramebufferObject::Attachment::Color0 }));
-    FramebufferObject::Unbind();
-
-    // Add temp textures and frame buffers
-    for (int i = 0; i < m_tempFramebuffers.size(); ++i)
-    {
-        m_tempTextures[i] = std::make_shared<Texture2DObject>();
-        m_tempTextures[i]->Bind();
-        m_tempTextures[i]->SetImage(0, width, height, TextureObject::FormatRGBA, TextureObject::InternalFormat::InternalFormatRGBA16F);
-        m_tempTextures[i]->SetParameter(TextureObject::ParameterEnum::WrapS, GL_CLAMP_TO_EDGE);
-        m_tempTextures[i]->SetParameter(TextureObject::ParameterEnum::WrapT, GL_CLAMP_TO_EDGE);
-        m_tempTextures[i]->SetParameter(TextureObject::ParameterEnum::MinFilter, GL_LINEAR);
-        m_tempTextures[i]->SetParameter(TextureObject::ParameterEnum::MagFilter, GL_LINEAR);
-
-        m_tempFramebuffers[i] = std::make_shared<FramebufferObject>();
-        m_tempFramebuffers[i]->Bind();
-        m_tempFramebuffers[i]->SetTexture(FramebufferObject::Target::Draw, FramebufferObject::Attachment::Color0, *m_tempTextures[i]);
-        m_tempFramebuffers[i]->SetDrawBuffers(std::array<FramebufferObject::Attachment, 1>({ FramebufferObject::Attachment::Color0 }));
-    }
-    Texture2DObject::Unbind();
-    FramebufferObject::Unbind();
 }
 
 void ProjectApplication::InitializeRenderer()
@@ -325,60 +252,11 @@ void ProjectApplication::InitializeRenderer()
     int width, height;
     GetMainWindow().GetDimensions(width, height);
 
-    //m_depthTexture = std::make_shared<Texture2DObject>();
-    //m_depthTexture->Bind();
-    //m_depthTexture->SetImage(0, width, height, TextureObject::FormatDepth, TextureObject::InternalFormatDepth);
-    //m_depthTexture->SetParameter(TextureObject::ParameterEnum::MinFilter, GL_NEAREST);
-    //m_depthTexture->SetParameter(TextureObject::ParameterEnum::MagFilter, GL_NEAREST);
-    //m_depthTexture->SetParameter(TextureObject::ParameterEnum::WrapS, GL_CLAMP_TO_EDGE);
-    //m_depthTexture->SetParameter(TextureObject::ParameterEnum::WrapT, GL_CLAMP_TO_EDGE);
-    //Texture2DObject::Unbind();
-
-    //// Initialize the framebuffers and the textures they use
-    //InitializeFramebuffers();
-
-    //// Skybox pass
+    // Skybox pass
     m_renderer.AddRenderPass(std::make_unique<SkyboxRenderPass>(m_skyboxTexture));
 
-    ////// Create a copy pass from m_sceneTexture to the first temporary texture
-    //std::shared_ptr<Material> copyMaterial = CreatePostFXMaterial("shaders/postfx/copy.frag", m_sceneTexture);
-    //m_renderer.AddRenderPass(std::make_unique<PostFXRenderPass>(copyMaterial, m_tempFramebuffers[0]));
-
-    ////// Replace the copy pass with a new bloom pass
-    //m_bloomMaterial = CreatePostFXMaterial("shaders/postfx/bloom.frag", m_sceneTexture);
-    //m_bloomMaterial->SetUniformValue("Range", glm::vec2(2.0f, 3.0f));
-    //m_bloomMaterial->SetUniformValue("Intensity", 1.0f);
-    //m_renderer.AddRenderPass(std::make_unique<PostFXRenderPass>(m_bloomMaterial, m_tempFramebuffers[0]));
-
-    ////// Add blur passes
-    //std::shared_ptr<Material> blurHorizontalMaterial = CreatePostFXMaterial("shaders/postfx/blur.frag", m_tempTextures[0]);
-    //blurHorizontalMaterial->SetUniformValue("Scale", glm::vec2(1.0f / width, 0.0f));
-    //std::shared_ptr<Material> blurVerticalMaterial = CreatePostFXMaterial("shaders/postfx/blur.frag", m_tempTextures[1]);
-    //blurVerticalMaterial->SetUniformValue("Scale", glm::vec2(0.0f, 1.0f / height));
-    //for (int i = 0; i < m_blurIterations; ++i)
-    //{
-    //    m_renderer.AddRenderPass(std::make_unique<PostFXRenderPass>(blurHorizontalMaterial, m_tempFramebuffers[1]));
-    //    m_renderer.AddRenderPass(std::make_unique<PostFXRenderPass>(blurVerticalMaterial, m_tempFramebuffers[0]));
-    //}
-
-    ////// Final pass
-    //m_composeMaterial = CreatePostFXMaterial("shaders/postfx/compose.frag", m_sceneTexture);
-
-    ////// Set exposure uniform default value
-    //m_composeMaterial->SetUniformValue("Exposure", m_exposure);
-
-    ////// Set uniform default values
-    //m_composeMaterial->SetUniformValue("Contrast", m_contrast);
-    //m_composeMaterial->SetUniformValue("HueShift", m_hueShift);
-    //m_composeMaterial->SetUniformValue("Saturation", m_saturation);
-    //m_composeMaterial->SetUniformValue("ColorFilter", m_colorFilter);
-
-    ////// Set the bloom texture uniform
-    //m_composeMaterial->SetUniformValue("BloomTexture", m_tempTextures[0]);
-
+    // Forward rendering
     m_renderer.AddRenderPass(std::make_unique<ForwardRenderPass>());
-
-    // m_renderer.AddRenderPass(std::make_unique<PostFXRenderPass>(m_composeMaterial, m_renderer.GetDefaultFramebuffer()));
 }
 
 std::shared_ptr<Material> ProjectApplication::CreatePostFXMaterial(const char* fragmentShaderPath, std::shared_ptr<Texture2DObject> sourceTexture)
@@ -435,47 +313,16 @@ void ProjectApplication::RenderGUI()
     // Draw GUI for camera controller
     m_cameraController.DrawGUI(m_imGui);
 
-    if (auto window = m_imGui.UseWindow("Post FX"))
-    {
-        if (m_composeMaterial)
-        {
-            if (ImGui::DragFloat("Exposure", &m_exposure, 0.01f, 0.01f, 5.0f))
-            {
-                m_composeMaterial->SetUniformValue("Exposure", m_exposure);
-            }
-
-            ImGui::Separator();
-
-            if (ImGui::SliderFloat("Contrast", &m_contrast, 0.5f, 1.5f))
-            {
-                m_composeMaterial->SetUniformValue("Contrast", m_contrast);
-            }
-            if (ImGui::SliderFloat("Hue Shift", &m_hueShift, -0.5f, 0.5f))
-            {
-                m_composeMaterial->SetUniformValue("HueShift", m_hueShift);
-            }
-            if (ImGui::SliderFloat("Saturation", &m_saturation, 0.0f, 2.0f))
-            {
-                m_composeMaterial->SetUniformValue("Saturation", m_saturation);
-            }
-            if (ImGui::ColorEdit3("Color Filter", &m_colorFilter[0]))
-            {
-                m_composeMaterial->SetUniformValue("ColorFilter", m_colorFilter);
-            }
-
-            ImGui::Separator();
-
-            if (ImGui::DragFloat2("Bloom Range", &m_bloomRange[0], 0.1f, 0.1f, 10.0f))
-            {
-                m_bloomMaterial->SetUniformValue("Range", m_bloomRange);
-            }
-            if (ImGui::DragFloat("Bloom Intensity", &m_bloomIntensity, 0.1f, 0.0f, 5.0f))
-            {
-                m_bloomMaterial->SetUniformValue("Intensity", m_bloomIntensity);
-            }
-        }
-    }
-
     m_imGui.EndFrame();
 }
 
+std::shared_ptr<PointLight> ProjectApplication::CreatePointLight(glm::vec3 position, glm::vec3 color, float intensity, glm::vec2 attenuation)
+{
+    std::shared_ptr<PointLight> pointLight = std::make_shared<PointLight>();
+    pointLight->SetPosition(position);
+    pointLight->SetColor(color);
+    pointLight->SetIntensity(intensity);
+    pointLight->SetDistanceAttenuation(attenuation);
+
+    return pointLight;
+}

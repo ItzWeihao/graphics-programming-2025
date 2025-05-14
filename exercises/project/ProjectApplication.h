@@ -12,6 +12,7 @@
 class Texture2DObject;
 class TextureCubemapObject;
 class Material;
+class PointLight;
 
 class ProjectApplication : public Application
 {
@@ -29,7 +30,6 @@ private:
     void InitializeLights();
     void InitializeMaterials();
     void InitializeModels();
-    void InitializeFramebuffers();
     void InitializeRenderer();
 
     std::shared_ptr<Material> CreatePostFXMaterial(const char* fragmentShaderPath, std::shared_ptr<Texture2DObject> sourceTexture = nullptr);
@@ -38,7 +38,7 @@ private:
 
     void RenderGUI();
 
-    void SortingLights();
+    std::shared_ptr<PointLight> CreatePointLight(glm::vec3 position, glm::vec3 color, float intensity, glm::vec2 attenuation);
 
 private:
     // Helper object for debug GUI
@@ -67,6 +67,7 @@ private:
     std::shared_ptr<Texture2DObject> m_sceneTexture;
     std::array<std::shared_ptr<FramebufferObject>, 2> m_tempFramebuffers;
     std::array<std::shared_ptr<Texture2DObject>, 2> m_tempTextures;
+    std::array<std::shared_ptr<Texture2DObject>, 2> m_tempDepthTexture;
 
     // Configuration values
     float m_exposure;
