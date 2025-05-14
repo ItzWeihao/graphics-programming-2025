@@ -38,6 +38,8 @@ private:
 
     void RenderGUI();
 
+    void SortingLights();
+
 private:
     // Helper object for debug GUI
     DearImGui m_imGui;
@@ -56,7 +58,6 @@ private:
 
     // Materials
     std::shared_ptr<Material> m_defaultMaterial;
-    std::shared_ptr<Material> m_deferredMaterial;
     std::shared_ptr<Material> m_composeMaterial;
     std::shared_ptr<Material> m_bloomMaterial;
 
